@@ -1,0 +1,116 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+    --admin-sidebar-width: 250px;
+    --admin-sidebar-bg: #222d32;
+    --admin-sidebar-bg-dark: #1a2226;
+    --admin-sidebar-hover: #1e282c;
+    --admin-sidebar-text: #b8c7ce;
+    --admin-page-bg: #f4f6f9;
+    --admin-header-height: 64px;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background: var(--admin-page-bg);
+}
+
+.admin-sidebar {
+    width: var(--admin-sidebar-width);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: var(--admin-sidebar-bg);
+    color: #fff;
+}
+
+.admin-brand {
+    height: var(--admin-header-height);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px;
+    font-size: 18px;
+    font-weight: 600;
+    background: var(--admin-sidebar-bg-dark);
+}
+
+.admin-brand-logo {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--admin-sidebar-bg);
+}
+
+.admin-menu {
+    padding: 16px 10px;
+}
+
+.admin-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    margin-bottom: 4px;
+    color: var(--admin-sidebar-text);
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.admin-menu-link:hover {
+    background: var(--admin-sidebar-hover);
+    color: #fff;
+}
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-topbar {
+    height: var(--admin-header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.admin-topbar-title {
+    font-weight: 600;
+}
+
+.admin-topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #495057;
+}
+
+.admin-content {
+    padding: 24px;
+}
+
+@media (max-width: 768px) {
+    .admin-wrapper {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .admin-content {
+        padding: 16px;
+    }
+}
