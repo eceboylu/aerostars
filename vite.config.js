@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/css/site.css', 'resources/js/site.js', 'resources/css/admin.css', 'resources/js/admin.js'],
+            input: ['resources/css/site.css', 'resources/css/cms-site.css', 'resources/css/cms-bootstrap.css', 'resources/js/site.js', 'resources/css/admin.css', 'resources/js/admin.js'],
             refresh: true,
             fonts: [
                 bunny('Instrument Sans', {
@@ -19,6 +19,9 @@ export default defineConfig({
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
+        },
+        proxy: {
+            '/uploads': 'http://localhost:8000',
         },
     },
 });

@@ -1,5 +1,3 @@
-{{-- Admin paneli ana iskeleti: sol menü, üst bar ve içerik alanı.
-     Tüm admin sayfaları bu dosyayı @extends ile kullanır. --}}
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -8,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>@yield('title') | Admin Panel</title>
+    <meta name="robots" content="noindex,nofollow">
 
     @vite([
         'resources/css/admin.css',
@@ -22,20 +21,19 @@
     <aside class="admin-sidebar">
 
         <div class="admin-brand">
-            <span class="admin-brand-logo">A</span>
-            <span>AirStars Admin</span>
+            <img src="/uploads/flyoneers-logo.png" alt="Flyoneers" class="admin-brand-logo">
         </div>
 
         <nav class="admin-menu">
 
-            <a href="#" class="admin-menu-link">
+            <a href="{{ route('admin.pages.dashboard') }}" class="admin-menu-link">
                 <i class="bi bi-speedometer2"></i>
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('admin.categories.index') }}" class="admin-menu-link">
-                <i class="bi bi-folder"></i>
-                <span>Kategoriler</span>
+            <a href="{{ route('admin.home-sections.index') }}" class="admin-menu-link">
+                <i class="bi bi-layout-text-window"></i>
+                <span>Ana Sayfa</span>
             </a>
 
             <a
@@ -46,14 +44,29 @@
     <span>Sayfalar</span>
 </a>
 
-            <a href="#" class="admin-menu-link">
-                <i class="bi bi-search"></i>
-                <span>SEO</span>
+            <a href="{{ route('admin.header-menu.index') }}" class="admin-menu-link">
+                <i class="bi bi-list"></i>
+                <span>Header Menu</span>
             </a>
 
-            <a href="#" class="admin-menu-link">
+            <a href="{{ route('admin.footer-menu.index') }}" class="admin-menu-link">
+                <i class="bi bi-layout-text-sidebar-reverse"></i>
+                <span>Footer Menu</span>
+            </a>
+
+            <a href="{{ route('admin.site-assets.edit') }}" class="admin-menu-link">
                 <i class="bi bi-gear"></i>
                 <span>Ayarlar</span>
+            </a>
+
+            <a href="{{ route('admin.filemanager.index') }}" class="admin-menu-link">
+                <i class="bi bi-images"></i>
+                <span>Dosya Yöneticisi</span>
+            </a>
+
+            <a href="{{ route('admin.winners.index') }}" class="admin-menu-link">
+                <i class="bi bi-trophy"></i>
+                <span>Kazananlar</span>
             </a>
 
         </nav>
@@ -68,7 +81,11 @@
 
             <div class="admin-topbar-user">
                 <i class="bi bi-person-circle"></i>
-                <span>Admin</span>
+                <span>{{ auth()->user()->username }}</span>
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Çıkış Yap</button>
+                </form>
             </div>
 
         </header>

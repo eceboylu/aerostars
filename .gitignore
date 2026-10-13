@@ -15,6 +15,10 @@
 /auth.json
 /node_modules
 /public/build
+/resources/css/cms-bootstrap.css
+/resources/css/cms-site.css
+/public/cms
+/storage/app/cms
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
@@ -25,3 +29,20 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Personal Claude Code skill/agent installs (not part of the app)
+/.agents
+/.claude/agents
+/.claude/skills/apple-design
+/.claude/skills/banner-design
+/.claude/skills/brand
+/.claude/skills/design
+/.claude/skills/design-system
+/.claude/skills/frontend-design
+/.claude/skills/impeccable
+/.claude/skills/slides
+/.claude/skills/ui-styling
+/.claude/skills/ui-ux-pro-max
+/.claude/skills/web-design-guidelines
+/.impeccable
+/skills-lock.json

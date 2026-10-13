@@ -1,0 +1,1 @@
+<section class="section section--board on-dark"><div class="wrap"><div class="section__head"><h2>{{ $closing_title }}</h2><p>{{ $closing_text }}</p></div><div class="btn-row"><a class="btn btn--signal" href="/enter/">{{ $closing_button_1_text }}</a><a class="btn" href="/how-it-works/">{{ $closing_button_2_text }}</a></div></div></section>

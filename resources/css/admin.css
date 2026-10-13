@@ -39,14 +39,10 @@
 }
 
 .admin-brand-logo {
-    width: 34px;
-    height: 34px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background: #fff;
-    color: var(--admin-sidebar-bg);
+    height: 36px;
+    width: auto;
+    display: block;
+    filter: saturate(0.8) brightness(0.95) hue-rotate(-6deg);
 }
 
 .admin-menu {
@@ -97,6 +93,105 @@
 
 .admin-content {
     padding: 24px;
+}
+
+.ck-editor__editable {
+    min-height: 400px;
+    height: auto;
+}
+
+.ck.ck-editor__editable_inline {
+    overflow: visible !important;
+}
+
+.admin-form-actions {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 0;
+    margin-top: 16px;
+    background: #fff;
+    border-top: 1px solid #dee2e6;
+}
+
+.admin-code-field {
+    max-height: 260px;
+    overflow-y: auto;
+    resize: vertical;
+}
+
+.admin-fieldset {
+    margin-bottom: 24px;
+}
+
+.admin-fieldset legend {
+    width: 100%;
+    float: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.admin-mode-radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+}
+
+.admin-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 6px 18px;
+    margin: 0 8px 12px 0;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    background: #fff;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.admin-mode-radio:checked + .admin-mode-btn {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.admin-mode-radio:focus-visible + .admin-mode-btn {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+.admin-mode-panel--custom {
+    display: none;
+}
+
+#mode_custom:checked ~ .admin-mode-panel--default {
+    display: none;
+}
+
+#mode_custom:checked ~ .admin-mode-panel--custom {
+    display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-mode-btn {
+        transition: none;
+    }
 }
 
 @media (max-width: 768px) {

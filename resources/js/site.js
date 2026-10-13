@@ -3,11 +3,9 @@
 
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Mobile menu
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("nav");
   if (toggle && nav) {
-    // Items slide in one after another when the menu opens
     Array.prototype.forEach.call(nav.children, function (item, i) {
       item.style.setProperty("--d", (i * 55) + "ms");
     });
@@ -19,7 +17,6 @@
     toggle.addEventListener("click", function () {
       setMenu(toggle.getAttribute("aria-expanded") !== "true");
     });
-    // Escape and a tap on any link close the menu
     document.addEventListener("keydown", function (ev) {
       if (ev.key === "Escape" && nav.classList.contains("is-open")) { setMenu(false); toggle.focus(); }
     });
@@ -28,7 +25,6 @@
     });
   }
 
-  // Category filter (all categories remain visible without JavaScript)
   var chips = document.querySelectorAll("[data-filter]");
   var blocks = document.querySelectorAll("[data-family]");
   chips.forEach(function (chip) {
@@ -38,12 +34,10 @@
       blocks.forEach(function (b) {
         b.hidden = !(want === "all" || b.getAttribute("data-family") === want);
       });
-      // Re-run the reveal on the blocks that just appeared
       blocks.forEach(function (b) { if (!b.hidden) b.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("is-in"); }); });
     });
   });
 
-  // Entry form
   var form = document.getElementById("entry-form");
   if (form) {
     var boxes = form.querySelectorAll('input[name="categories[]"]');
@@ -86,9 +80,7 @@
     });
   }
 
-  // ---------- Motion ----------
 
-  // Count-up for the numbers in the hero stat strip
   function countUp(el) {
     var target = parseInt(el.textContent, 10);
     if (isNaN(target) || reduce) return;
@@ -104,23 +96,20 @@
     requestAnimationFrame(step);
   }
 
-  // Reveal targets: section heads and card grids, not individual cards (cards keep their own hover motion)
   var revealSel = [
-    ".section .section__head", ".section .rows", ".section .steps", ".section .criteria",
+    ".section .section__head", ".section .steps", ".section .criteria",
     ".section .jurors", ".section .cols", ".section .split", ".section .faq-top",
     ".section .table-wrap", ".split-board > *", ".section .btn-row", ".section .note-line"
   ].join(",");
   var revealEls = Array.prototype.slice.call(document.querySelectorAll(revealSel));
   revealEls.forEach(function (el) {
     el.classList.add("reveal");
-    // Small stagger inside each group so cards do not all appear at once
     var kids = el.children;
     if (kids.length > 1 && kids.length < 40) {
       for (var i = 0; i < kids.length; i++) kids[i].style.setProperty("--d", Math.min(i * 60, 480) + "ms");
     }
   });
 
-  // Hero: play its entrance on load
   var heroParts = document.querySelectorAll(".hero--landing .wrap > *");
   heroParts.forEach(function (el, i) {
     el.classList.add("reveal");
@@ -153,7 +142,6 @@
     statNums.forEach(function (el) { io.observe(el); });
   }
 
-  // Hero backdrop: random approach lights, different on every visit (decorative, so it is skipped without JS)
   var runway = document.querySelector(".hero__runway");
   if (runway) {
     var rnd = function (a, b) { return a + Math.random() * (b - a); };
@@ -174,7 +162,6 @@
     runway.appendChild(frag);
   }
 
-  // Pointer spotlight on cards
   if (!reduce && window.matchMedia("(hover: hover)").matches) {
     var cardSel = ".row, .step, .juror, .split__col, .criteria > div, .stats li";
     document.addEventListener("pointermove", function (ev) {
@@ -186,7 +173,6 @@
     });
   }
 
-  // Page transition: a gold curtain covers the page, then the next page is opened
   if (!reduce) {
     var curtain = document.createElement("div");
     curtain.className = "curtain is-cover";
@@ -203,15 +189,15 @@
       var url;
       try { url = new URL(a.href, window.location.href); } catch (err) { return; }
       if (url.origin !== window.location.origin) return;
-      if (url.pathname === window.location.pathname && url.search === window.location.search) return; // same page / hash
+      if (url.pathname === window.location.pathname && url.search === window.location.search) return;
       ev.preventDefault();
       curtain.classList.add("is-cover");
       setTimeout(function () { window.location.href = url.href; }, 560);
     });
 
-    // Back/forward cache: never leave the curtain stuck on screen
     window.addEventListener("pageshow", function (ev) {
       if (ev.persisted) curtain.classList.remove("is-cover");
     });
   }
 })();
+

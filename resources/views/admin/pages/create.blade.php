@@ -1,4 +1,3 @@
-{{-- Yeni sayfa formu. Adres: /admin/pages/create --}}
 @extends('layouts.admin')
 
 @section('title', 'Yeni Sayfa')
@@ -27,93 +26,26 @@
 
                 @csrf
 
-                <div class="mb-3">
-                    <label for="category_id" class="form-label">Kategori</label>
-                    <select
-                        id="category_id"
-                        name="category_id"
-                        class="form-select @error('category_id') is-invalid @enderror"
-                    >
-                        <option value="">Kategori yok</option>
-                        @foreach ($categories as $category)
-                            <option
-                                value="{{ $category->id }}"
-                                @selected(old('category_id') == $category->id)
-                            >
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('category_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                @include('admin.pages._fields')
 
-                <div class="mb-3">
-                    <label for="title" class="form-label">Başlık</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value="{{ old('title') }}"
-                        class="form-control @error('title') is-invalid @enderror"
-                        required
-                    >
-                    @error('title')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label for="slug" class="form-label">Slug</label>
-                    <input
-                        type="text"
-                        id="slug"
-                        name="slug"
-                        value="{{ old('slug') }}"
-                        class="form-control @error('slug') is-invalid @enderror"
-                        required
-                    >
-                    @error('slug')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label for="content" class="form-label">İçerik</label>
-                    <textarea
-                        id="content"
-                        name="content"
-                        rows="8"
-                        class="form-control @error('content') is-invalid @enderror"
-                    >{{ old('content') }}</textarea>
-                    @error('content')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-4">
-                    <label for="status" class="form-label">Durum</label>
-                    <select
-                        id="status"
-                        name="status"
-                        class="form-select @error('status') is-invalid @enderror"
-                    >
-                        <option value="1" @selected(old('status', '1') == '1')>Aktif</option>
-                        <option value="0" @selected(old('status') === '0')>Pasif</option>
-                    </select>
-                    @error('status')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="d-flex gap-2">
+                <div class="admin-form-actions">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-check-lg"></i>
                         Kaydet
                     </button>
 
-                    <a href="{{ route('admin.pages.index') }}" class="btn btn-light">
+                    <button
+                        type="submit"
+                        class="btn btn-outline-primary"
+                        formaction="{{ route('admin.pages.preview') }}"
+                        formtarget="_blank"
+                        formnovalidate
+                    >
+                        <i class="bi bi-eye"></i>
+                        Önizle
+                    </button>
+
+                    <a href="{{ route('admin.pages.index') }}" class="btn btn-outline-secondary">
                         İptal
                     </a>
                 </div>

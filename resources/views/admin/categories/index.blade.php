@@ -28,6 +28,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Ad</th>
+                        <th scope="col">Üst Kategori</th>
                         <th scope="col">Slug</th>
                         <th scope="col">Durum</th>
                         <th scope="col" class="text-end">İşlemler</th>
@@ -42,6 +43,8 @@
                             <td>{{ $loop->iteration }}</td>
 
                             <td class="fw-semibold">{{ $category->name }}</td>
+
+                            <td class="text-muted">{{ $category->parent?->name ?? '—' }}</td>
 
                             <td class="text-muted">{{ $category->slug }}</td>
 
@@ -87,7 +90,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">
+                            <td colspan="6" class="text-center text-muted py-4">
                                 Henüz kategori eklenmemiş.
                             </td>
                         </tr>

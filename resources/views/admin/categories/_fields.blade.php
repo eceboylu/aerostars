@@ -3,6 +3,28 @@
 @endphp
 
 <div class="mb-3">
+    <label for="parent_id" class="form-label">Üst Kategori</label>
+    <select
+        id="parent_id"
+        name="parent_id"
+        class="form-select @error('parent_id') is-invalid @enderror"
+    >
+        <option value="">Ana Seviye</option>
+        @foreach ($categories as $parentCategory)
+            <option
+                value="{{ $parentCategory->id }}"
+                @selected(old('parent_id', $category->parent_id ?? '') == $parentCategory->id)
+            >
+                {{ $parentCategory->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('parent_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="mb-3">
     <label for="name" class="form-label">Kategori Adı</label>
     <input
         type="text"

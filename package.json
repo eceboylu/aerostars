@@ -3,13 +3,19 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "cms:css": "node build-cms-assets.cjs",
+        "build": "npm run cms:css && vite build",
+        "dev": "npm run cms:css && vite"
     },
     "devDependencies": {
+        "@tailwindcss/node": "^4.0.0",
+        "@tailwindcss/oxide": "^4.0.0",
         "@tailwindcss/vite": "^4.0.0",
         "concurrently": "^10.0.3",
         "laravel-vite-plugin": "^3.1",
+        "postcss": "^8.5.29",
+        "postcss-cli": "^12.0.0",
+        "postcss-prefix-selector": "^2.2.1",
         "tailwindcss": "^4.0.0",
         "vite": "^8.0.0"
     },
@@ -19,6 +25,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "bootstrap": "^5.3.8",
-        "bootstrap-icons": "^1.13.1"
+        "bootstrap-icons": "^1.13.1",
+        "ckeditor5": "^48.5.2"
     }
 }

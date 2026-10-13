@@ -6,27 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('pages', function (Blueprint $table) {
-            $table->id();$table->string('title');
+            $table->id();
+            $table->string('title');
             $table->string('slug')->unique();
             $table->text('content')->nullable();
             $table->boolean('status')->default(true);
             $table->foreignId('category_id')
-               ->nullable()
-               ->constrained()
-               ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('pages');
