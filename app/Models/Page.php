@@ -14,7 +14,6 @@ class Page extends Model
 
     protected $fillable = [
         'parent_id',
-        'category_id',
         'title',
         'slug',
         'custom_html',
@@ -27,11 +26,6 @@ class Page extends Model
         'robots_index',
         'badge_image',
     ];
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
 
     protected function customHtml(): Attribute
     {

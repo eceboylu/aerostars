@@ -192,6 +192,10 @@ a:hover { text-decoration-thickness: 0.16em; }
 .split__col { border-top: 4px solid var(--signal); padding-top: 16px; }
 .split__col--not { border-top-color: var(--line); }
 .split__col h3 { font-size: 1.4rem; }
+
+.contact-grid { display: grid; gap: 24px; margin-bottom: clamp(32px, 5vw, 48px); }
+@media (min-width: 700px) { .contact-grid { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+.contact-grid .split__col p { color: var(--ink-2); margin: 6px 0 16px; }
 .plain { list-style: none; padding: 0; margin: 0; }
 .plain li { padding: 12px 0; margin: 0; border-bottom: 1px solid var(--line); }
 

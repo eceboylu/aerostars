@@ -79,7 +79,6 @@ class PageController extends Controller
     {
         $validated = $request->validate([
             'parent_id' => 'nullable|exists:pages,id',
-            'category_id' => 'sometimes|nullable|exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug',
             'status' => 'required|boolean',
@@ -126,7 +125,6 @@ class PageController extends Controller
 
         $validated = $request->validate([
             'parent_id' => ['nullable', 'exists:pages,id', Rule::notIn($forbiddenParentIds)],
-            'category_id' => 'sometimes|nullable|exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug,'.$id,
             'custom_html' => 'nullable|string',

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FileManagerController;
 use App\Http\Controllers\Admin\FooterMenuController;
 use App\Http\Controllers\Admin\HeaderMenuController;
@@ -44,24 +43,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/dashboard', [PageController::class, 'dashboard'])
         ->name('admin.pages.dashboard');
-
-    Route::get('/admin/categories', [CategoryController::class, 'index'])
-        ->name('admin.categories.index');
-
-    Route::get('/admin/categories/create', [CategoryController::class, 'create'])
-        ->name('admin.categories.create');
-
-    Route::post('/admin/categories', [CategoryController::class, 'store'])
-        ->name('admin.categories.store');
-
-    Route::get('/admin/categories/{category}/edit', [CategoryController::class, 'edit'])
-        ->name('admin.categories.edit');
-
-    Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])
-        ->name('admin.categories.update');
-
-    Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])
-        ->name('admin.categories.destroy');
 
     Route::get('/admin/pages', [PageController::class, 'index'])
         ->name('admin.pages.index');
