@@ -50,7 +50,6 @@
                         name="custom_html"
                         class="form-control @error('custom_html') is-invalid @enderror"
                         data-start-mode="source"
-                        required
                     >{{ old('custom_html') }}</textarea>
                     <div class="form-text">Bu bölüm, anasayfada burada yazdığınız haliyle yayınlanır. Mevcut <code>.section</code> ve <code>.wrap</code> gibi class'ları kullanabilirsiniz.</div>
                     @error('custom_html')

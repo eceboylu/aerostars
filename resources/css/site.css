@@ -274,7 +274,8 @@ a:hover { text-decoration-thickness: 0.16em; }
 .verify__status--ok { border-color: var(--signal); color: var(--signal); }
 
 
-.prose { max-width: 44rem; }
+.prose { max-width: 58rem; }
+.prose p { max-width: none; }
 .prose h2 { margin-top: 1.8em; font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem); }
 .prose h2:first-child { margin-top: 0; }
 .layout { display: grid; gap: 40px; padding-block: clamp(32px, 5vw, 64px); }
@@ -300,6 +301,7 @@ table.dates tbody th { font-weight: 700; white-space: nowrap; padding-right: 20p
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after { content: "+"; position: absolute; right: 4px; top: 12px; font-size: 1.6rem; font-weight: 500; }
 .faq details[open] summary::after { content: "\2013"; }
+.faq details.is-closing summary::after { content: "+"; }
 .faq details p { color: var(--ink-2); padding-bottom: 12px; }
 .faq-top { border-top: 2px solid var(--ink); }
 
@@ -406,6 +408,7 @@ body { overflow-x: clip; }
 @keyframes shine { to { background-position: 250% center; } }
 
 .hero--landing h1 {
+  max-width: none; white-space: pre-line; font-size: clamp(2.2rem, 1rem + 4.2vw, 4.6rem);
   background: var(--gold-grad) 0 0 / 250% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: shine 7s linear infinite;
   filter: drop-shadow(0 4px 18px rgba(201, 162, 39, 0.25));

@@ -25,6 +25,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/netlify-dist
+/.netlify
 _ide_helper.php
 Homestead.json
 Homestead.yaml

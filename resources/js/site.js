@@ -77,6 +77,15 @@
       }
       var btn = form.querySelector('button[type="submit"]');
       if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
+      if (form.dataset.successUrl) {
+        ev.preventDefault();
+        window.location.href = form.dataset.successUrl;
+      }
+    });
+
+    window.addEventListener("pageshow", function () {
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn && btn.disabled) { btn.disabled = false; btn.textContent = "Send application"; }
     });
   }
 
@@ -197,6 +206,54 @@
 
     window.addEventListener("pageshow", function (ev) {
       if (ev.persisted) curtain.classList.remove("is-cover");
+    });
+  }
+
+  var accordions = document.querySelectorAll("details[name]");
+  if (accordions.length && Element.prototype.animate) {
+    var heightWhen = function (d, open) {
+      var was = d.open;
+      d.open = open;
+      var h = d.getBoundingClientRect().height;
+      d.open = was;
+      return h;
+    };
+
+    var setOpen = function (d, open) {
+      var from = d.getBoundingClientRect().height;
+      if (d._anim) { d._anim.cancel(); d._anim = null; }
+      d._target = open;
+      d.classList.toggle("is-closing", !open);
+      if (reduce) { d.open = open; d.classList.remove("is-closing"); return; }
+      var to = heightWhen(d, open);
+      d.open = true;
+      d.style.overflow = "hidden";
+      var anim = d.animate({ height: [from + "px", to + "px"] }, { duration: 320, easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
+      d._anim = anim;
+      anim.onfinish = function () {
+        d._anim = null;
+        d.open = open;
+        d.style.overflow = "";
+        d.classList.remove("is-closing");
+      };
+    };
+
+    accordions.forEach(function (d) {
+      d.dataset.accordion = d.getAttribute("name");
+      d.removeAttribute("name");
+      d._target = d.open;
+      var summary = d.querySelector("summary");
+      if (!summary) return;
+      summary.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        var opening = !d._target;
+        if (opening) {
+          document.querySelectorAll('details[data-accordion="' + d.dataset.accordion + '"]').forEach(function (other) {
+            if (other !== d && other._target) setOpen(other, false);
+          });
+        }
+        setOpen(d, opening);
+      });
     });
   }
 })();
