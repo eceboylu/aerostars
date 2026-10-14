@@ -5,10 +5,13 @@ namespace App\Models;
 use App\Services\Cms\CssScoper;
 use App\Services\Cms\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'parent_id',
         'category_id',

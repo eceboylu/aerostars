@@ -67,6 +67,17 @@
 
                             <td class="text-end text-nowrap">
 
+                                @if ($winner->verification_slug)
+                                    <a
+                                        href="{{ route('site.verify', $winner->verification_slug) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        title="Doğrulama sayfasını aç"
+                                    >
+                                        <i class="bi bi-patch-check"></i>
+                                    </a>
+                                @endif
+
                                 <a
                                     href="{{ route('admin.winners.edit', $winner) }}"
                                     class="btn btn-sm btn-outline-primary"

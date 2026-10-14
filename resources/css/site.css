@@ -256,13 +256,18 @@ a:hover { text-decoration-thickness: 0.16em; }
 
 .winners { list-style: none; margin: 0 0 clamp(32px, 5vw, 56px); padding: 0; display: grid; gap: 16px; }
 @media (min-width: 700px) { .winners { grid-template-columns: repeat(2, 1fr); } }
-.winner { border-top: 4px solid var(--signal); background: var(--panel); padding: 20px; display: grid; gap: 6px; }
-.winner__badge { width: 110px; height: 110px; object-fit: contain; display: block; margin: 0 auto 10px; }
+.winner { border-top: 4px solid var(--signal); background: var(--panel); padding: 19px; display: grid; gap: 6px; height: auto; align-content: start; overflow: hidden; text-align: center; }
+.winner__badge { width: 50%; aspect-ratio: 1 / 1; object-fit: contain; display: block; margin: 0 auto 10px; }
 .winner__logo { width: 48px; height: 48px; object-fit: contain; margin-bottom: 6px; }
 .winner__category { font: 700 0.78rem var(--f-ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal); }
 .winner__name { font: 800 1.25rem/1.2 var(--f-ui); font-stretch: 92%; }
 .winner__date { color: var(--ink-2); font-size: 0.9rem; }
 .winner__desc { color: var(--ink-2); margin: 4px 0 0; }
+
+.verify { max-width: 36rem; margin-inline: auto; gap: 10px; }
+.verify__badge-empty { display: flex; align-items: center; justify-content: center; border: 2px solid var(--signal); border-radius: 50%; color: var(--signal); font: 800 1.1rem/1.3 var(--f-ui); text-transform: uppercase; }
+.verify__status { margin: 0; padding: 10px 14px; border: 1px solid var(--line); color: var(--ink-2); font-family: var(--f-ui); font-size: 0.95rem; }
+.verify__status--ok { border-color: var(--signal); color: var(--signal); }
 
 
 .prose { max-width: 44rem; }

@@ -48,6 +48,11 @@
 <script>
     var errorBox = document.getElementById('fm-upload-error');
     var dropzone = document.getElementById('fm-dropzone');
+    var maxUploadBytes = 2 * 1024 * 1024;
+
+    function formatMb(bytes) {
+        return (bytes / (1024 * 1024)).toFixed(1);
+    }
 
     function uploadOne(file) {
         var data = new FormData();
@@ -69,20 +74,36 @@
 
         var files = Array.from(fileList);
         var failed = [];
+        var uploaded = 0;
 
         function next(index) {
             if (index >= files.length) {
                 if (failed.length) {
-                    errorBox.textContent = failed.length + ' dosya yüklenemedi: ' + failed.join(', ');
+                    var names = failed.map(function (f) { return f.name; });
+                    alert(failed.length + ' dosya yüklenemedi:\n' + names.join('\n'));
+                    errorBox.textContent = failed.length + ' dosya yüklenemedi: ' + names.join(', ');
                 }
 
-                window.location.reload();
+                if (uploaded > 0) {
+                    window.location.reload();
+                }
+
                 return;
             }
 
-            uploadOne(files[index]).then(function (ok) {
-                if (!ok) {
-                    failed.push(files[index].name);
+            var file = files[index];
+
+            if (file.size > maxUploadBytes) {
+                failed.push({ name: file.name + ' (' + formatMb(file.size) + ' MB, maksimum 2 MB)' });
+                next(index + 1);
+                return;
+            }
+
+            uploadOne(file).then(function (ok) {
+                if (ok) {
+                    uploaded++;
+                } else {
+                    failed.push({ name: file.name });
                 }
 
                 next(index + 1);

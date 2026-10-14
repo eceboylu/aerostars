@@ -154,6 +154,20 @@ class SiteController extends Controller
         return view('site.page', compact('page', 'breadcrumbs', 'breadcrumbSchema', 'previewHtml', 'previewCss', 'family', 'siblingAwards'));
     }
 
+    public function verify(string $slug)
+    {
+        $winner = Winner::where('verification_slug', $slug)
+            ->where('status', true)
+            ->with('category')
+            ->firstOrFail();
+
+        $winnersPage = Page::where('slug', 'winners')->where('status', true)->first();
+
+        return response()
+            ->view('site.verify', compact('winner', 'winnersPage'))
+            ->header('X-Frame-Options', 'DENY');
+    }
+
     public static function familyCode(Page $family): string
     {
         $slug = basename($family->slug);

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\Winner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 
 class WinnerController extends Controller
 {
@@ -29,12 +31,23 @@ class WinnerController extends Controller
     {
         $validated = $this->validated($request);
 
-        Winner::create($validated);
+        if (empty($validated['verification_slug'])) {
+            $category = Page::find($validated['category_page_id']);
+
+            $validated['verification_slug'] = Winner::makeVerificationSlug(
+                $validated['company_name'],
+                $category->title,
+                Carbon::parse($validated['won_at'])->year
+            );
+        }
+
+        $winner = Winner::create($validated);
 
         $this->saveCategoryBadge($request, $validated['category_page_id']);
 
         return redirect()
-            ->route('admin.winners.index');
+            ->route('admin.winners.edit', $winner)
+            ->with('status', 'Kazanan eklendi. Firmaya verilecek rozet ve embed kodu aşağıda hazır.');
     }
 
     public function edit(Winner $winner)
@@ -46,7 +59,7 @@ class WinnerController extends Controller
 
     public function update(Request $request, Winner $winner)
     {
-        $validated = $this->validated($request);
+        $validated = $this->validated($request, $winner);
 
         $winner->update($validated);
 
@@ -64,14 +77,23 @@ class WinnerController extends Controller
             ->route('admin.winners.index');
     }
 
-    private function validated(Request $request): array
+    private function validated(Request $request, ?Winner $winner = null): array
     {
+        $slugRule = $winner ? 'required' : 'nullable';
+
         return $request->validate([
             'category_page_id' => 'required|exists:pages,id',
             'company_name' => 'required|string|max:255',
+            'verification_slug' => [
+                $slugRule,
+                'string',
+                'max:255',
+                'alpha_dash',
+                Rule::unique('winners', 'verification_slug')->ignore($winner?->id),
+            ],
             'logo' => 'nullable|string|max:2048',
             'description' => 'nullable|string|max:2000',
-            'won_at' => 'nullable|date',
+            'won_at' => 'required|date',
             'status' => 'required|boolean',
             'category_badge_image' => 'nullable|string|max:2048',
         ]);

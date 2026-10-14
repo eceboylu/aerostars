@@ -22,6 +22,9 @@ Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])
 Route::get('/robots.txt', [SiteController::class, 'robots'])
     ->name('robots');
 
+Route::get('/verify/{slug}', [SiteController::class, 'verify'])
+    ->name('site.verify');
+
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])
     ->middleware('guest')
     ->name('admin.login');

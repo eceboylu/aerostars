@@ -8,7 +8,7 @@
 
         <div>
             <h1 class="h3 mb-1">Yeni Kazanan Ekle</h1>
-            <p class="text-muted mb-0">Bir kategoriye kazanan şirket ekleyin.</p>
+            <p class="text-muted mb-0">Bir kategoriye kazanan şirket ekleyin. Kaydettikten sonra rozet, doğrulama linki ve embed kodu otomatik oluşturulur.</p>
         </div>
 
         <a href="{{ route('admin.winners.index') }}" class="btn btn-outline-secondary">

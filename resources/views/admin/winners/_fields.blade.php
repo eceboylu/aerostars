@@ -65,6 +65,23 @@
 </div>
 
 <div class="mb-3">
+    <label for="verification_slug" class="form-label">Doğrulama Slug</label>
+    <input
+        type="text"
+        id="verification_slug"
+        name="verification_slug"
+        value="{{ old('verification_slug', $winner?->verification_slug ?? '') }}"
+        class="form-control @error('verification_slug') is-invalid @enderror"
+        placeholder="Boş bırakılırsa otomatik oluşturulur"
+        @if ($winner) required @endif
+    >
+    <div class="form-text">Doğrulama adresi: /verify/slug. Slug değiştirilirse firmanın sitesine eklediği eski embed linki çalışmaz.</div>
+    @error('verification_slug')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="mb-3">
     <label class="form-label">Logo</label>
     <div class="row g-2 align-items-center">
         <div class="col-auto">
@@ -151,6 +168,7 @@
             name="won_at"
             value="{{ old('won_at', $winner?->won_at?->format('Y-m-d') ?? '') }}"
             class="form-control @error('won_at') is-invalid @enderror"
+            required
         >
         @error('won_at')
             <div class="invalid-feedback">{{ $message }}</div>
