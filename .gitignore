@@ -49,3 +49,15 @@ Thumbs.db
 /.impeccable
 /skills-lock.json
 grandoriatours.com/
+
+/.claude
+/.junie
+/.mcp.json
+/AGENTS.md
+/CLAUDE.md
+/boost.json
+/tests
+/phpunit.xml
+/netlify.toml
+/README.md
+/.editorconfig
