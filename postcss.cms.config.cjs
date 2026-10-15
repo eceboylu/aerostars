@@ -4,12 +4,7 @@ module.exports = {
             prefix: '#cms-page-content',
 
             transform(prefix, selector, prefixedSelector) {
-
-                if (selector === ':root') {
-                    return prefix;
-                }
-
-                if (selector === 'body') {
+                if (selector === ':root' || selector === 'body') {
                     return prefix;
                 }
 

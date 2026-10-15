@@ -8,6 +8,10 @@ class SiteSetting extends Model
 {
     protected $fillable = ['key', 'value'];
 
+    public const HEADER_KEYS = ['site_logo', 'header_cta_label', 'header_cta_url'];
+
+    public const FOOTER_KEYS = ['footer_description', 'footer_copyright', 'footer_email'];
+
     public const HOMEPAGE_DEFAULTS = [
         'hero_eyebrow' => 'Airport passenger services awards · 2027',
         'hero_title' => 'Awards for the companies behind the airport journey',

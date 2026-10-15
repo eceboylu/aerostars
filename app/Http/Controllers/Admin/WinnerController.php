@@ -108,7 +108,7 @@ class WinnerController extends Controller
 
     private function families()
     {
-        $categoriesRoot = Page::where('slug', 'categories')->first();
+        $categoriesRoot = Page::categoriesRoot();
 
         if (! $categoriesRoot) {
             return collect();

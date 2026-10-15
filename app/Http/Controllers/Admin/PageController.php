@@ -18,7 +18,7 @@ class PageController extends Controller
 {
     public function dashboard()
     {
-        $categoriesRootPage = Page::where('slug', 'categories')->first();
+        $categoriesRootPage = Page::categoriesRoot();
         $familyCount = 0;
         $categoryCount = 0;
 
@@ -77,20 +77,7 @@ class PageController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'parent_id' => 'nullable|exists:pages,id',
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug',
-            'status' => 'required|boolean',
-            'custom_html' => 'nullable|string',
-            'custom_css' => 'nullable|string',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
-            'canonical_url' => 'nullable|url|max:2048',
-            'robots_index' => 'required|boolean',
-            'badge_image' => 'nullable|string|max:2048',
-        ]);
+        $validated = $this->validatePage($request);
 
         Page::create($validated);
 
@@ -121,22 +108,8 @@ class PageController extends Controller
     public function update(Request $request, $id)
     {
         $page = Page::findOrFail($id);
-        $forbiddenParentIds = array_merge([$page->id], $page->descendantIds());
 
-        $validated = $request->validate([
-            'parent_id' => ['nullable', 'exists:pages,id', Rule::notIn($forbiddenParentIds)],
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug,'.$id,
-            'custom_html' => 'nullable|string',
-            'custom_css' => 'nullable|string',
-            'status' => 'required|boolean',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
-            'canonical_url' => 'nullable|url|max:2048',
-            'robots_index' => 'required|boolean',
-            'badge_image' => 'nullable|string|max:2048',
-        ]);
+        $validated = $this->validatePage($request, $page);
 
         $page->update($validated);
 
@@ -147,6 +120,27 @@ class PageController extends Controller
         return redirect()
             ->route('admin.pages.edit', ['page' => $page->id, 'back' => $backUrl])
             ->with('success', 'Sayfa başarıyla güncellendi.');
+    }
+
+    private function validatePage(Request $request, ?Page $page = null): array
+    {
+        $forbiddenParentIds = $page ? array_merge([$page->id], $page->descendantIds()) : [];
+
+        return $request->validate([
+            'parent_id' => ['nullable', 'exists:pages,id', Rule::notIn($forbiddenParentIds)],
+            'title' => 'required|string|max:255',
+            'slug' => ['required', 'string', 'max:255', Rule::unique('pages', 'slug')->ignore($page?->id)],
+            'status' => 'required|boolean',
+            'custom_html' => 'nullable|string',
+            'custom_css' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'canonical_url' => 'nullable|url|max:2048',
+            'robots_index' => 'required|boolean',
+            'badge_image' => 'nullable|string|max:2048',
+            'icon' => FileManagerController::uploadedImageRules(),
+        ]);
     }
 
     private function resolveBackUrl(?string $url): string

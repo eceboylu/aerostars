@@ -1,24 +1,5 @@
 @extends('layouts.site')
 
-@section('head')
-<title>{{ $page->seoTitle() }}</title>
-@if ($page->seoDescription())
-<meta name="description" content="{{ $page->seoDescription() }}">
-@endif
-@if ($page->meta_keywords)
-<meta name="keywords" content="{{ $page->meta_keywords }}">
-@endif
-<link rel="canonical" href="{{ $page->seoCanonicalUrl() }}">
-<meta name="robots" content="{{ $page->seoRobotsContent() }}">
-<meta property="og:title" content="{{ $page->seoOgTitle() }}">
-@if ($page->seoOgDescription())
-<meta property="og:description" content="{{ $page->seoOgDescription() }}">
-@endif
-<meta property="og:url" content="{{ $page->seoCanonicalUrl() }}">
-<meta property="og:type" content="website">
-<script type="application/ld+json">@json($breadcrumbSchema)</script>
-@endsection
-
 @section('content')
 
 <div class="pagehead"><div class="wrap"><h1>{{ $page->title }}</h1><p class="pagehead__lede">{{ $page->meta_description }}</p></div></div>

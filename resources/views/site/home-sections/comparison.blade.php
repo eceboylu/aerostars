@@ -1,4 +1,4 @@
-<section class="section section--panel"><div class="wrap">
+<section class="section section--panel section--meaning"><div class="wrap">
   <div class="section__head"><h2>{{ $heading }}</h2>
   <p>{{ $paragraph }}</p></div>
   <div class="split">

@@ -35,9 +35,6 @@ class ExportStaticSite extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * @return array<int, string>
-     */
     private function publicPaths(): array
     {
         $paths = ['/'];
@@ -62,8 +59,11 @@ class ExportStaticSite extends Command
         $targetDir = $path === '/' ? $outputDir : $outputDir.$path;
 
         $html = str_replace(
-            ['http://localhost/', 'https://localhost/', 'http://localhost', 'https://localhost'],
-            ['/', '/', '', ''],
+            [
+                'http://localhost/', 'https://localhost/', 'http://localhost', 'https://localhost',
+                'http:\/\/localhost\/', 'https:\/\/localhost\/', 'http:\/\/localhost', 'https:\/\/localhost',
+            ],
+            ['/', '/', '', '', '\/', '\/', '\/', '\/'],
             $response->getContent()
         );
 
@@ -75,7 +75,7 @@ class ExportStaticSite extends Command
 
     private function copyAssets(string $outputDir): void
     {
-        foreach (['build', 'uploads'] as $directory) {
+        foreach (['build', 'uploads', 'cms'] as $directory) {
             $source = public_path($directory);
 
             if (File::isDirectory($source)) {
@@ -83,7 +83,7 @@ class ExportStaticSite extends Command
             }
         }
 
-        foreach (['favicon.ico', 'favicon.svg'] as $file) {
+        foreach (['favicon.ico', 'favicon-32x32.png','apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'robots.txt'] as $file) {
             $source = public_path($file);
 
             if (File::exists($source)) {

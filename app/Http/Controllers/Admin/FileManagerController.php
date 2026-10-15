@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -10,6 +11,27 @@ use Illuminate\Support\Str;
 class FileManagerController extends Controller
 {
     private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
+    public static function uploadedImageRules(): array
+    {
+        return [
+            'bail',
+            'nullable',
+            'string',
+            'max:2048',
+            function (string $attribute, mixed $value, Closure $fail): void {
+                if (! preg_match('/^\/uploads\/[A-Za-z0-9._-]+\.(png|jpe?g|webp)$/i', $value)) {
+                    $fail('Görsel, dosya yöneticisinden seçilmiş bir PNG, JPG veya WebP dosyası olmalıdır.');
+
+                    return;
+                }
+
+                if (! Storage::disk('uploads')->exists(basename($value))) {
+                    $fail('Seçilen görsel dosyası bulunamadı. Lütfen dosya yöneticisinden yeniden seçin.');
+                }
+            },
+        ];
+    }
 
     public function index(Request $request)
     {

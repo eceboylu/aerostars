@@ -10,12 +10,20 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        $password = env('ADMIN_SEED_PASSWORD');
+
+        if (blank($password)) {
+            $this->command->error('ADMIN_SEED_PASSWORD is not set in .env, the admin user was not created.');
+
+            return;
+        }
+
         User::firstOrCreate(
             ['username' => 'admin'],
             [
                 'name' => 'Admin',
                 'email' => 'admin@airstars.local',
-                'password' => Hash::make('123456'),
+                'password' => Hash::make($password),
             ]
         );
     }

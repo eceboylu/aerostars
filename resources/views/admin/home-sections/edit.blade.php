@@ -100,6 +100,28 @@
                                             @error('hero_lede') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
 
+                                        @php
+                                            $emptyImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+                                            $heroEmblem = old('hero_emblem', $settingsFields['hero_emblem']);
+                                        @endphp
+                                        <div class="mb-3">
+                                            <label for="hero_emblem" class="form-label">Başlık Üstü Görsel</label>
+                                            <div class="row g-2 align-items-center">
+                                                <div class="col-auto">
+                                                    <img id="hero_emblem_preview" src="{{ $heroEmblem ?: $emptyImage }}" data-placeholder="{{ $emptyImage }}" alt="Görsel önizlemesi" style="width:64px;height:64px;object-fit:contain;border-radius:6px;background:#0B0D10;padding:6px;">
+                                                </div>
+                                                <div class="col">
+                                                    <input type="text" id="hero_emblem" name="hero_emblem" value="{{ $heroEmblem }}" class="form-control @error('hero_emblem') is-invalid @enderror" placeholder="Dosya yöneticisinden seçin">
+                                                </div>
+                                                <div class="col-auto d-flex gap-2">
+                                                    <button type="button" class="btn btn-outline-secondary js-pick-image" data-input="hero_emblem" data-preview="hero_emblem_preview" data-fm-url="{{ route('admin.filemanager.index', ['picker' => 1]) }}">Seç / Yükle</button>
+                                                    <button type="button" class="btn btn-outline-danger js-clear-image" data-input="hero_emblem" data-preview="hero_emblem_preview">Kaldır</button>
+                                                </div>
+                                            </div>
+                                            <div class="form-text">Ana sayfada büyük başlığın üstündeki görsel. Boş bırakılırsa gösterilmez.</div>
+                                            @error('hero_emblem') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                                        </div>
+
                                         <label class="form-label">İstatistikler</label>
                                         @for ($i = 1; $i <= 4; $i++)
                                             <div class="row g-2 mb-3">

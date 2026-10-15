@@ -96,6 +96,10 @@ class HomeSectionController extends Controller
             }
         }
 
+        if ($homeSection->key === 'hero') {
+            $settingsFields['hero_emblem'] = SiteSetting::get('hero_emblem');
+        }
+
         if ($homeSection->key === 'ticker') {
             $data = $homeSection->settingsWithDefaults();
             $settingsFields = [];
@@ -227,6 +231,7 @@ class HomeSectionController extends Controller
 
         if ($homeSection->key === 'hero') {
             $rules += array_fill_keys(self::HERO_KEYS, 'required|string|max:1000');
+            $rules['hero_emblem'] = FileManagerController::uploadedImageRules();
         } elseif ($homeSection->key === 'cta') {
             $rules += array_fill_keys(self::CTA_KEYS, 'required|string|max:1000');
         } elseif ($homeSection->key === 'key_dates') {
@@ -283,6 +288,7 @@ class HomeSectionController extends Controller
 
         if ($homeSection->key === 'hero') {
             SiteSetting::setMany(array_intersect_key($validated, array_flip(self::HERO_KEYS)));
+            SiteSetting::setMany(['hero_emblem' => $validated['hero_emblem'] ?? null]);
         } elseif ($homeSection->key === 'cta') {
             SiteSetting::setMany(array_intersect_key($validated, array_flip(self::CTA_KEYS)));
         } elseif ($homeSection->key === 'key_dates') {

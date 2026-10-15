@@ -1,24 +1,5 @@
 @extends('layouts.site')
 
-@section('head')
-<title>{{ $page->seoTitle() }}</title>
-@if ($page->seoDescription())
-<meta name="description" content="{{ $page->seoDescription() }}">
-@endif
-@if ($page->meta_keywords)
-<meta name="keywords" content="{{ $page->meta_keywords }}">
-@endif
-<link rel="canonical" href="{{ $page->seoCanonicalUrl() }}">
-<meta name="robots" content="{{ $page->seoRobotsContent() }}">
-<meta property="og:title" content="{{ $page->seoOgTitle() }}">
-@if ($page->seoOgDescription())
-<meta property="og:description" content="{{ $page->seoOgDescription() }}">
-@endif
-<meta property="og:url" content="{{ $page->seoCanonicalUrl() }}">
-<meta property="og:type" content="website">
-<script type="application/ld+json">@json($breadcrumbSchema)</script>
-@endsection
-
 @push('styles')
     @vite(['resources/css/cms-bootstrap.css', 'resources/css/cms-site.css'])
 
@@ -39,6 +20,19 @@
     Bu bir önizlemedir — hiçbir şey kaydedilmedi.
 </div>
 @endif
+@if ($errors->any())
+<div class="wrap">
+    <div class="form-errors" role="alert">
+        <p class="form-errors__title">Please check the following and send again:</p>
+        <ul>
+            @foreach ($errors->all() as $message)
+                <li>{{ $message }}</li>
+            @endforeach
+        </ul>
+    </div>
+</div>
+<script>window.flyOldInput = @json(session()->getOldInput());</script>
+@endif
 <div
     id="cms-page-content"
     class="cms-page-content"
@@ -54,9 +48,12 @@
             @foreach ($siblingAwards as $award)
                 <li class="row">
                     <a class="row__link" href="{{ $award->publicUrl() }}">
+                        @if ($award->icon)
+                            <span class="row__icon" aria-hidden="true"><img src="{{ $award->icon }}" alt="" loading="lazy"></span>
+                        @endif
                         <div class="row__body">
                             <span class="row__name">{{ $award->title }}</span>
-                            <span class="row__text">{{ \App\Http\Controllers\SiteController::shortDescription($award) }}</span>
+                            <span class="row__text">{{ $award->shortDescription() }}</span>
                         </div>
                         <span class="row__go">View category</span>
                     </a>

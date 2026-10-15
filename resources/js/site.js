@@ -6,9 +6,6 @@
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("nav");
   if (toggle && nav) {
-    Array.prototype.forEach.call(nav.children, function (item, i) {
-      item.style.setProperty("--d", (i * 55) + "ms");
-    });
     var setMenu = function (open) {
       toggle.setAttribute("aria-expanded", String(open));
       toggle.textContent = open ? "Close" : "Menu";
@@ -20,10 +17,29 @@
     document.addEventListener("keydown", function (ev) {
       if (ev.key === "Escape" && nav.classList.contains("is-open")) { setMenu(false); toggle.focus(); }
     });
+    document.addEventListener("pointerdown", function (ev) {
+      if (nav.classList.contains("is-open") && !nav.contains(ev.target) && !toggle.contains(ev.target)) setMenu(false);
+    });
     nav.addEventListener("click", function (ev) {
       if (ev.target.closest && ev.target.closest("a") && nav.classList.contains("is-open")) setMenu(false);
     });
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 860 && nav.classList.contains("is-open")) setMenu(false);
+    });
   }
+
+  var markBrokenImages = function (imageSelector, parentSelector, brokenClass) {
+    document.querySelectorAll(imageSelector).forEach(function (img) {
+      var markParent = function () {
+        var parent = img.closest(parentSelector);
+        if (parent) parent.classList.add(brokenClass);
+      };
+      if (img.complete && img.naturalWidth === 0) markParent();
+      img.addEventListener("error", markParent);
+    });
+  };
+  markBrokenImages(".brand img", ".brand", "is-broken");
+  markBrokenImages(".juror__photo", ".juror", "image-unavailable");
 
   var chips = document.querySelectorAll("[data-filter]");
   var blocks = document.querySelectorAll("[data-family]");
@@ -34,18 +50,46 @@
       blocks.forEach(function (b) {
         b.hidden = !(want === "all" || b.getAttribute("data-family") === want);
       });
-      blocks.forEach(function (b) { if (!b.hidden) b.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("is-in"); }); });
     });
   });
 
   var form = document.getElementById("entry-form");
   if (form) {
+    var submitButton = form.querySelector('button[type="submit"]');
+    var tokenMeta = document.querySelector('meta[name="csrf-token"]');
+    if (tokenMeta && !form.querySelector('input[name="_token"]')) {
+      var token = document.createElement("input");
+      token.type = "hidden";
+      token.name = "_token";
+      token.value = tokenMeta.getAttribute("content");
+      form.appendChild(token);
+    }
+
+    var old = window.flyOldInput || {};
+    Object.keys(old).forEach(function (name) {
+      if (name === "_token" || name === "categories") return;
+      var field = form.elements[name];
+      if (!field || field.type === "file") return;
+      if (field.type === "checkbox") { field.checked = old[name] === "1"; return; }
+      field.value = old[name];
+    });
+
     var boxes = form.querySelectorAll('input[name="categories[]"]');
+    if (Array.isArray(old.categories)) {
+      boxes.forEach(function (b) { b.checked = old.categories.indexOf(b.value) !== -1; });
+    }
     var picked = document.getElementById("picked");
+    var countChecked = function () {
+      var checked = 0;
+      boxes.forEach(function (b) { if (b.checked) checked++; });
+      return checked;
+    };
     var update = function () {
-      var n = 0;
-      boxes.forEach(function (b) { if (b.checked) n++; });
-      if (picked) picked.textContent = n === 0 ? "No categories selected yet" : n + (n === 1 ? " category selected" : " categories selected");
+      var n = countChecked();
+      if (!picked) return;
+      if (n === 0) picked.textContent = "No categories selected yet";
+      else if (n === 1) picked.textContent = "1 category selected";
+      else picked.textContent = n + " categories selected";
     };
     var wanted = new URLSearchParams(window.location.search).getAll("category");
     boxes.forEach(function (b) {
@@ -66,96 +110,25 @@
     }
 
     form.addEventListener("submit", function (ev) {
-      var any = false;
-      boxes.forEach(function (b) { if (b.checked) any = true; });
-      if (!any) {
+      if (countChecked() === 0) {
         ev.preventDefault();
         if (picked) picked.textContent = "Choose at least one category before sending.";
-        var first = boxes[0];
-        if (first) first.focus();
+        if (boxes[0]) boxes[0].focus();
         return;
       }
-      var btn = form.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
-      if (form.dataset.successUrl) {
-        ev.preventDefault();
-        window.location.href = form.dataset.successUrl;
-      }
+      if (submitButton) { submitButton.disabled = true; submitButton.textContent = "Sending…"; }
     });
 
     window.addEventListener("pageshow", function () {
-      var btn = form.querySelector('button[type="submit"]');
-      if (btn && btn.disabled) { btn.disabled = false; btn.textContent = "Send application"; }
+      if (submitButton && submitButton.disabled) { submitButton.disabled = false; submitButton.textContent = "Send application"; }
     });
-  }
-
-
-  function countUp(el) {
-    var target = parseInt(el.textContent, 10);
-    if (isNaN(target) || reduce) return;
-    var start = null, dur = 1100;
-    el.textContent = "0";
-    function step(ts) {
-      if (start === null) start = ts;
-      var p = Math.min((ts - start) / dur, 1);
-      var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = String(Math.round(target * eased));
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  var revealSel = [
-    ".section .section__head", ".section .steps", ".section .criteria",
-    ".section .jurors", ".section .cols", ".section .split", ".section .faq-top",
-    ".section .table-wrap", ".split-board > *", ".section .btn-row", ".section .note-line"
-  ].join(",");
-  var revealEls = Array.prototype.slice.call(document.querySelectorAll(revealSel));
-  revealEls.forEach(function (el) {
-    el.classList.add("reveal");
-    var kids = el.children;
-    if (kids.length > 1 && kids.length < 40) {
-      for (var i = 0; i < kids.length; i++) kids[i].style.setProperty("--d", Math.min(i * 60, 480) + "ms");
-    }
-  });
-
-  var heroParts = document.querySelectorAll(".hero--landing .wrap > *");
-  heroParts.forEach(function (el, i) {
-    el.classList.add("reveal");
-    el.style.setProperty("--d", (120 + i * 130) + "ms");
-  });
-  var statNums = document.querySelectorAll(".stat__num");
-
-  function showAll() {
-    heroParts.forEach(function (el) { el.classList.add("is-in"); });
-    revealEls.forEach(function (el) { el.classList.add("is-in"); });
-    statNums.forEach(function (el) { el.classList.add("is-in"); });
-  }
-
-  if (reduce || !("IntersectionObserver" in window)) {
-    showAll();
-  } else {
-    requestAnimationFrame(function () {
-      heroParts.forEach(function (el) { el.classList.add("is-in"); });
-    });
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        el.classList.add("is-in");
-        if (el.classList.contains("stat__num")) countUp(el);
-        io.unobserve(el);
-      });
-    }, { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
-    revealEls.forEach(function (el) { io.observe(el); });
-    statNums.forEach(function (el) { io.observe(el); });
   }
 
   var runway = document.querySelector(".hero__runway");
-  if (runway) {
+  if (runway && !runway.children.length) {
     var rnd = function (a, b) { return a + Math.random() * (b - a); };
     var frag = document.createDocumentFragment();
-    for (var n = 0; n < 70; n++) {
+    for (var n = 0; n < 40; n++) {
       var light = document.createElement("span");
       var dur = rnd(9, 15);
       light.className = "runway__light";
@@ -164,49 +137,9 @@
       light.style.setProperty("--s", rnd(3, 6).toFixed(1) + "px");
       light.style.setProperty("--t", dur.toFixed(2) + "s");
       light.style.setProperty("--d", (-rnd(0, dur)).toFixed(2) + "s");
-      light.style.setProperty("--o", rnd(0.6, 1).toFixed(2));
-      light.style.setProperty("--dx", rnd(-40, 40).toFixed(0) + "px");
       frag.appendChild(light);
     }
     runway.appendChild(frag);
-  }
-
-  if (!reduce && window.matchMedia("(hover: hover)").matches) {
-    var cardSel = ".row, .step, .juror, .split__col, .criteria > div, .stats li";
-    document.addEventListener("pointermove", function (ev) {
-      var card = ev.target.closest && ev.target.closest(cardSel);
-      if (!card) return;
-      var r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", (ev.clientX - r.left) + "px");
-      card.style.setProperty("--my", (ev.clientY - r.top) + "px");
-    });
-  }
-
-  if (!reduce) {
-    var curtain = document.createElement("div");
-    curtain.className = "curtain is-cover";
-    curtain.setAttribute("aria-hidden", "true");
-    document.body.appendChild(curtain);
-    requestAnimationFrame(function () {
-      setTimeout(function () { curtain.classList.remove("is-cover"); }, 60);
-    });
-
-    document.addEventListener("click", function (ev) {
-      if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-      var a = ev.target.closest && ev.target.closest("a[href]");
-      if (!a || a.target || a.hasAttribute("download")) return;
-      var url;
-      try { url = new URL(a.href, window.location.href); } catch (err) { return; }
-      if (url.origin !== window.location.origin) return;
-      if (url.pathname === window.location.pathname && url.search === window.location.search) return;
-      ev.preventDefault();
-      curtain.classList.add("is-cover");
-      setTimeout(function () { window.location.href = url.href; }, 560);
-    });
-
-    window.addEventListener("pageshow", function (ev) {
-      if (ev.persisted) curtain.classList.remove("is-cover");
-    });
   }
 
   var accordions = document.querySelectorAll("details[name]");
@@ -256,5 +189,17 @@
       });
     });
   }
-})();
 
+  if ("IntersectionObserver" in window && !reduce) {
+    var selectors = [".section__head", ".row", ".split__col", ".board", ".cols", ".criteria > div", ".step", ".juror", ".faq-top", ".winner", ".family-block__head", ".note"];
+    var nodes = Array.prototype.slice.call(document.querySelectorAll(selectors.join(",")));
+    nodes.forEach(function (node) { node.classList.add("reveal-target"); });
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.07, rootMargin: "0px 0px 30px 0px" });
+    nodes.forEach(function (node) { observer.observe(node); });
+    document.documentElement.classList.add("js-ready");
+  }
+})();

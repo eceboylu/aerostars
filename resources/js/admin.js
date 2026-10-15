@@ -171,3 +171,18 @@ document.querySelectorAll('.js-pick-image').forEach(function (button) {
         window.open(button.dataset.fmUrl, 'filemanager', 'width=720,height=560,resizable=yes,scrollbars=yes');
     });
 });
+
+document.querySelectorAll('.js-clear-image').forEach(function (button) {
+    button.addEventListener('click', function () {
+        const input = document.getElementById(button.dataset.input);
+        const preview = document.getElementById(button.dataset.preview);
+
+        if (input) {
+            input.value = '';
+        }
+
+        if (preview) {
+            preview.src = preview.dataset.placeholder || '';
+        }
+    });
+});

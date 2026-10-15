@@ -1,4 +1,4 @@
-<section class="section"><div class="wrap split-board">
+<section class="section section--dates"><div class="wrap split-board">
   <div>
     <div class="section__head"><h2>{{ $heading }}</h2>
     <p>{{ $paragraph }}</p></div>

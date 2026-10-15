@@ -21,7 +21,11 @@
     <aside class="admin-sidebar">
 
         <div class="admin-brand">
-            <img src="/uploads/flyoneers-logo.png" alt="Flyoneers" class="admin-brand-logo">
+            @if ($siteLogo)
+                <img src="{{ $siteLogo }}" alt="Flyoneers" class="admin-brand-logo">
+            @else
+                <span>Flyoneers</span>
+            @endif
         </div>
 
         <nav class="admin-menu">

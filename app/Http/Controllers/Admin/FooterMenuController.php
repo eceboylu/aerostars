@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MenuItem;
 use App\Models\Page;
-use App\Services\Cms\HtmlSanitizer;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class FooterMenuController extends Controller
 {
@@ -21,7 +20,24 @@ class FooterMenuController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('admin.footer-menu.index', compact('menuItems'));
+        $settings = SiteSetting::getMany(SiteSetting::FOOTER_KEYS);
+
+        return view('admin.footer-menu.index', compact('menuItems', 'settings'));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $validated = $request->validate([
+            'footer_description' => 'nullable|string|max:500',
+            'footer_copyright' => 'nullable|string|max:255',
+            'footer_email' => 'nullable|email|max:255',
+        ]);
+
+        SiteSetting::setMany($validated);
+
+        return redirect()
+            ->route('admin.footer-menu.index')
+            ->with('status', 'Footer bilgileri kaydedildi.');
     }
 
     public function create()
@@ -80,29 +96,7 @@ class FooterMenuController extends Controller
 
     private function validateMenuItem(Request $request, array $forbiddenParentIds = []): array
     {
-        $validated = $request->validate([
-            'parent_id' => [
-                'nullable',
-                Rule::exists('menu_items', 'id')->where(fn ($query) => $query->where('location', self::LOCATION)),
-                Rule::notIn($forbiddenParentIds),
-            ],
-            'link_type' => 'required|in:page,custom,none',
-            'page_id' => 'required_if:link_type,page|nullable|exists:pages,id',
-            'custom_url' => [
-                'required_if:link_type,custom',
-                'nullable',
-                'string',
-                'max:2048',
-                function ($attribute, $value, $fail) {
-                    if ($value && ! app(HtmlSanitizer::class)->isSafeUrl($value)) {
-                        $fail('Geçersiz veya güvenli olmayan bir adres girdiniz.');
-                    }
-                },
-            ],
-            'label' => 'required|string|max:255',
-            'sort_order' => 'nullable|integer',
-            'status' => 'required|boolean',
-        ]);
+        $validated = $request->validate(MenuItem::validationRules(self::LOCATION, $forbiddenParentIds));
 
         $validated['open_in_new_tab'] = $request->boolean('open_in_new_tab');
 

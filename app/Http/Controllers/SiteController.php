@@ -8,17 +8,9 @@ use App\Models\SiteSetting;
 use App\Models\Winner;
 use App\Services\Cms\CssScoper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
-    private const FAMILY_CODES = [
-        'travel-technology-platforms' => 'TTP',
-        'travel-guides-content' => 'TGC',
-        'airport-ground-services' => 'AGS',
-        'inclusive-travel-resources' => 'ITR',
-    ];
-
     public function home(Request $request)
     {
         if (SiteSetting::get('homepage_override_enabled') === '1') {
@@ -40,6 +32,8 @@ class SiteController extends Controller
             ->get();
 
         $preview = $request->boolean('preview') && auth()->check();
+
+        $settings['hero_emblem'] = SiteSetting::get('hero_emblem');
 
         return view('site.home', array_merge($settings, ['sections' => $sections, 'preview' => $preview]));
     }
@@ -96,18 +90,12 @@ class SiteController extends Controller
         $breadcrumbSchema = $this->breadcrumbSchema($breadcrumbs);
 
         if ($page->slug === 'categories') {
-            $families = $page->children()
-                ->where('status', true)
-                ->orderBy('title')
-                ->get();
+            $families = $page->activeChildren()->get();
 
             $familyAwards = [];
 
             foreach ($families as $family) {
-                $familyAwards[$family->id] = $family->children()
-                    ->where('status', true)
-                    ->orderBy('title')
-                    ->get();
+                $familyAwards[$family->id] = $family->activeChildren()->get();
             }
 
             return view('site.categories-index', compact('page', 'families', 'familyAwards', 'breadcrumbs', 'breadcrumbSchema'));
@@ -124,15 +112,10 @@ class SiteController extends Controller
         }
 
         if ($page->parent && $page->parent->slug === 'categories') {
-            $awards = $page->children()
-                ->where('status', true)
-                ->orderBy('title')
-                ->get();
+            $awards = $page->activeChildren()->get();
 
-            $siblingFamilies = $page->parent->children()
-                ->where('status', true)
+            $siblingFamilies = $page->parent->activeChildren()
                 ->where('id', '!=', $page->id)
-                ->orderBy('title')
                 ->get();
 
             return view('site.category-family', compact('page', 'awards', 'siblingFamilies', 'breadcrumbs', 'breadcrumbSchema'));
@@ -144,10 +127,8 @@ class SiteController extends Controller
         if ($page->parent && $page->parent->parent && $page->parent->parent->slug === 'categories') {
             $family = $page->parent;
 
-            $siblingAwards = $family->children()
-                ->where('status', true)
+            $siblingAwards = $family->activeChildren()
                 ->where('id', '!=', $page->id)
-                ->orderBy('title')
                 ->get();
         }
 
@@ -166,23 +147,6 @@ class SiteController extends Controller
         return response()
             ->view('site.verify', compact('winner', 'winnersPage'))
             ->header('X-Frame-Options', 'DENY');
-    }
-
-    public static function familyCode(Page $family): string
-    {
-        $slug = basename($family->slug);
-
-        return self::FAMILY_CODES[$slug] ?? strtoupper(substr(preg_replace('/[^a-zA-Z]/', '', $slug), 0, 3));
-    }
-
-    public static function shortDescription(Page $page): string
-    {
-        $description = (string) $page->meta_description;
-        $prefix = $page->title.' at the Flyoneers Awards 2027. ';
-
-        return Str::startsWith($description, $prefix)
-            ? Str::after($description, $prefix)
-            : $description;
     }
 
     private function pageBreadcrumbs(Page $page): array
@@ -209,28 +173,21 @@ class SiteController extends Controller
 
     private function breadcrumbSchema(array $breadcrumbs): array
     {
-        $items = [
+        $listItems = [
             [
+                '@type' => 'ListItem',
+                'position' => 1,
                 'name' => 'Home',
-                'url' => route('home'),
+                'item' => route('home'),
             ],
         ];
 
         foreach ($breadcrumbs as $breadcrumb) {
-            $items[] = [
-                'name' => $breadcrumb->title,
-                'url' => $breadcrumb->url,
-            ];
-        }
-
-        $listItems = [];
-
-        foreach ($items as $index => $item) {
             $listItems[] = [
                 '@type' => 'ListItem',
-                'position' => $index + 1,
-                'name' => $item['name'],
-                'item' => $item['url'],
+                'position' => count($listItems) + 1,
+                'name' => $breadcrumb->title,
+                'item' => $breadcrumb->url,
             ];
         }
 

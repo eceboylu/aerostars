@@ -4,7 +4,8 @@
     $selectedRobotsIndex = old('robots_index', isset($page) ? (int) $page->robots_index : 1);
     $lockedParent = ! isset($page) && ! empty($presetParentId) ? \App\Models\Page::find($presetParentId) : null;
 
-    $contentFields = ['parent_id', 'title', 'slug', 'status'];
+    $contentFields = ['parent_id', 'title', 'slug', 'status', 'badge_image', 'icon'];
+    $iconPlaceholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
     $designFields = ['custom_html', 'custom_css'];
     $seoFields = [
         'meta_title', 'meta_description', 'meta_keywords',
@@ -175,6 +176,54 @@
             </div>
             <div class="form-text">Bu kategori bir ödül kategorisiyse, kazanan kartında görünen rozet/widget görseli. Diğer sayfalarda kullanılmaz.</div>
             @error('badge_image')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="icon">İkon</label>
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <img
+                        id="icon_preview"
+                        src="{{ old('icon', $page->icon ?? '') ?: $iconPlaceholder }}"
+                        data-placeholder="{{ $iconPlaceholder }}"
+                        alt="İkon önizlemesi"
+                        style="width:56px;height:56px;object-fit:contain;border-radius:6px;background:#14171C;padding:6px;"
+                    >
+                </div>
+                <div class="col">
+                    <input
+                        type="text"
+                        id="icon"
+                        name="icon"
+                        value="{{ old('icon', $page->icon ?? '') }}"
+                        class="form-control @error('icon') is-invalid @enderror"
+                        placeholder="Dosya yöneticisinden seçin"
+                    >
+                </div>
+                <div class="col-auto d-flex gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary js-pick-image"
+                        data-input="icon"
+                        data-preview="icon_preview"
+                        data-fm-url="{{ route('admin.filemanager.index', ['picker' => 1]) }}"
+                    >
+                        Seç / Yükle
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-danger js-clear-image"
+                        data-input="icon"
+                        data-preview="icon_preview"
+                    >
+                        Kaldır
+                    </button>
+                </div>
+            </div>
+            <div class="form-text">Award family ve kategori kartlarında gösterilen ikon. PNG, JPG veya WebP (en fazla 4 MB, dosya yöneticisinden yüklenir). Şeffaf arka planlı, kare bir PNG önerilir. Boş bırakılırsa sitede tasarıma uygun varsayılan ikon gösterilir.</div>
+            @error('icon')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>

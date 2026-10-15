@@ -66,11 +66,7 @@ class CssScoper
     {
         $selector = trim($selector);
 
-        if ($selector === ':root') {
-            return $scope;
-        }
-
-        if ($selector === 'body') {
+        if ($selector === ':root' || $selector === 'body') {
             return $scope;
         }
 

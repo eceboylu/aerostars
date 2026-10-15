@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\HomeSectionController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SiteAssetsController;
 use App\Http\Controllers\Admin\WinnerController;
+use App\Http\Controllers\EntrySubmissionController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,10 @@ Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])
 
 Route::get('/robots.txt', [SiteController::class, 'robots'])
     ->name('robots');
+
+Route::post('/enter/submit', [EntrySubmissionController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('site.entry.submit');
 
 Route::get('/verify/{slug}', [SiteController::class, 'verify'])
     ->name('site.verify');
@@ -83,6 +88,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/header-menu/{headerMenuItem}', [HeaderMenuController::class, 'destroy'])
         ->name('admin.header-menu.destroy');
 
+    Route::put('/admin/header-menu-settings', [HeaderMenuController::class, 'updateSettings'])
+        ->name('admin.header-menu.settings');
+
     Route::get('/admin/footer-menu', [FooterMenuController::class, 'index'])
         ->name('admin.footer-menu.index');
 
@@ -100,6 +108,9 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/admin/footer-menu/{footerMenuItem}', [FooterMenuController::class, 'destroy'])
         ->name('admin.footer-menu.destroy');
+
+    Route::put('/admin/footer-menu-settings', [FooterMenuController::class, 'updateSettings'])
+        ->name('admin.footer-menu.settings');
 
     Route::get('/admin/home-sections', [HomeSectionController::class, 'index'])
         ->name('admin.home-sections.index');

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\Cms\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class MenuItem extends Model
 {
@@ -47,6 +49,33 @@ class MenuItem extends Model
         }
 
         return $ids;
+    }
+
+    public static function validationRules(string $location, array $forbiddenParentIds = []): array
+    {
+        return [
+            'parent_id' => [
+                'nullable',
+                Rule::exists('menu_items', 'id')->where('location', $location),
+                Rule::notIn($forbiddenParentIds),
+            ],
+            'link_type' => 'required|in:page,custom,none',
+            'page_id' => 'required_if:link_type,page|nullable|exists:pages,id',
+            'custom_url' => [
+                'required_if:link_type,custom',
+                'nullable',
+                'string',
+                'max:2048',
+                function ($attribute, $value, $fail) {
+                    if ($value && ! app(HtmlSanitizer::class)->isSafeUrl($value)) {
+                        $fail('Geçersiz veya güvenli olmayan bir adres girdiniz.');
+                    }
+                },
+            ],
+            'label' => 'required|string|max:255',
+            'sort_order' => 'nullable|integer',
+            'status' => 'required|boolean',
+        ];
     }
 
     public function url(): ?string

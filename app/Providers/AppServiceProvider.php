@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\MenuItem;
+use App\Models\SiteSetting;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +16,11 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.site', function ($view) {
             $view->with('headerMenuItems', $this->menuTree('header'));
             $view->with('footerMenuItems', $this->menuTree('footer'));
+            $view->with('siteChrome', SiteSetting::getMany(array_merge(SiteSetting::HEADER_KEYS, SiteSetting::FOOTER_KEYS)));
+        });
+
+        View::composer(['layouts.admin', 'admin.auth.login'], function ($view) {
+            $view->with('siteLogo', SiteSetting::get('site_logo'));
         });
     }
 

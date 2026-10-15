@@ -18,6 +18,72 @@
 
     </div>
 
+    @if (session('status'))
+        <div class="alert alert-success">{{ session('status') }}</div>
+    @endif
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h2 class="h5 mb-1">Footer Bilgileri</h2>
+            <p class="text-muted small mb-3">Footer'da logonun altındaki açıklama ve en alttaki satır. Boş bırakılan alan sitede gösterilmez.</p>
+
+            <form method="POST" action="{{ route('admin.footer-menu.settings') }}">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-3">
+                    <label for="footer_description" class="form-label">Açıklama (logonun altı)</label>
+                    <textarea
+                        id="footer_description"
+                        name="footer_description"
+                        rows="2"
+                        maxlength="500"
+                        class="form-control @error('footer_description') is-invalid @enderror"
+                    >{{ old('footer_description', $settings['footer_description']) }}</textarea>
+                    @error('footer_description')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-7">
+                        <label for="footer_copyright" class="form-label">Telif satırı</label>
+                        <input
+                            type="text"
+                            id="footer_copyright"
+                            name="footer_copyright"
+                            value="{{ old('footer_copyright', $settings['footer_copyright']) }}"
+                            class="form-control @error('footer_copyright') is-invalid @enderror"
+                            placeholder="© 2027 Flyoneers. All rights reserved."
+                        >
+                        @error('footer_copyright')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="footer_email" class="form-label">E-posta</label>
+                        <input
+                            type="email"
+                            id="footer_email"
+                            name="footer_email"
+                            value="{{ old('footer_email', $settings['footer_email']) }}"
+                            class="form-control @error('footer_email') is-invalid @enderror"
+                        >
+                        @error('footer_email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i>
+                    Kaydet
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div class="card border-0 shadow-sm">
 
         <div class="table-responsive">

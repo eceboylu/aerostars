@@ -25,6 +25,7 @@ class Page extends Model
         'canonical_url',
         'robots_index',
         'badge_image',
+        'icon',
     ];
 
     protected function customHtml(): Attribute
@@ -67,6 +68,31 @@ class Page extends Model
         return $ids;
     }
 
+    public function activeChildren()
+    {
+        return $this->children()
+            ->where('status', true)
+            ->orderBy('title');
+    }
+
+    public static function categoriesRoot(): ?Page
+    {
+        return static::where('slug', 'categories')->first();
+    }
+
+    public static function activeAwardCategoryCount(): int
+    {
+        $categoriesRoot = static::categoriesRoot();
+
+        if (! $categoriesRoot) {
+            return 0;
+        }
+
+        return static::where('status', true)
+            ->whereIn('parent_id', $categoriesRoot->children()->where('status', true)->select('id'))
+            ->count();
+    }
+
     public function publicUrl(): string
     {
         return route('site.page', $this->slug);
@@ -82,14 +108,16 @@ class Page extends Model
         return $this->meta_description;
     }
 
-    public function seoOgTitle(): string
+    public function shortDescription(): string
     {
-        return $this->seoTitle();
-    }
+        $description = (string) $this->meta_description;
+        $prefix = $this->title.' at the Flyoneers Awards 2027. ';
 
-    public function seoOgDescription(): ?string
-    {
-        return $this->seoDescription();
+        if (str_starts_with($description, $prefix)) {
+            return substr($description, strlen($prefix));
+        }
+
+        return $description;
     }
 
     public function seoCanonicalUrl(): string
