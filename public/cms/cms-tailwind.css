@@ -1,0 +1,7 @@
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@layer theme, utilities;
+@layer utilities {
+  #cms-page-content .hidden {
+    display: none;
+  }
+}

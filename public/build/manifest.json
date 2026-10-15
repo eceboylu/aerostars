@@ -1,0 +1,65 @@
+{
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BeopsB42.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "resources/css/admin.css": {
+    "file": "assets/admin-Cypi5d3z.css",
+    "name": "admin",
+    "names": [
+      "admin.css"
+    ],
+    "src": "resources/css/admin.css",
+    "isEntry": true,
+    "assets": [
+      "assets/bootstrap-icons-mSm7cUeB.woff2",
+      "assets/bootstrap-icons-BeopsB42.woff"
+    ]
+  },
+  "resources/css/cms-bootstrap.css": {
+    "file": "assets/cms-bootstrap-kEI0ZE8y.css",
+    "name": "cms-bootstrap",
+    "names": [
+      "cms-bootstrap.css"
+    ],
+    "src": "resources/css/cms-bootstrap.css",
+    "isEntry": true
+  },
+  "resources/css/cms-site.css": {
+    "file": "assets/cms-site-BA-PvBwi.css",
+    "name": "cms-site",
+    "names": [
+      "cms-site.css"
+    ],
+    "src": "resources/css/cms-site.css",
+    "isEntry": true
+  },
+  "resources/css/site.css": {
+    "file": "assets/site-A-79WH7F.css",
+    "name": "site",
+    "names": [
+      "site.css"
+    ],
+    "src": "resources/css/site.css",
+    "isEntry": true
+  },
+  "resources/js/admin.js": {
+    "file": "assets/admin-CmdbWV_m.js",
+    "name": "admin",
+    "src": "resources/js/admin.js",
+    "isEntry": true,
+    "css": [
+      "assets/admin-D66LXvSz.css"
+    ]
+  },
+  "resources/js/site.js": {
+    "file": "assets/site-CD1i4vBf.js",
+    "name": "site",
+    "src": "resources/js/site.js",
+    "isEntry": true
+  }
+}

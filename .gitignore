@@ -14,10 +14,8 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
 /resources/css/cms-bootstrap.css
 /resources/css/cms-site.css
-/public/cms
 /storage/app/cms
 /public/fonts-manifest.dev.json
 /public/hot
